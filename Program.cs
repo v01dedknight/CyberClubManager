@@ -5,7 +5,6 @@ using CyberClubManager.Core;
 namespace CyberClubManager {
   internal class Program {
     private static void Main(string[] args) {
-      // База данных будет лежать рядом с исполняемым файлом приложения
       string dbPath = "cyberclub_data.txt";
       BookingController controller = new BookingController(dbPath);
 
@@ -18,6 +17,7 @@ namespace CyberClubManager {
         Console.WriteLine("3. Открыть игровую сессию (С расчётом стоимости)");
         Console.WriteLine("4. Завершить игровую сессию");
         Console.WriteLine("5. Показать активные сессии");
+        Console.WriteLine("6. Показать финансовый отчёт (Касса)");
         Console.WriteLine("0. Выход");
         Console.Write("Выберите действие: ");
 
@@ -57,8 +57,6 @@ namespace CyberClubManager {
               GameSession session = controller.StartSession(pcId, username, hours);
               Console.WriteLine($"\n[УСПЕХ] Сессия успешно открыта!");
               Console.WriteLine($"Игрок: {session.Username} | ПК №{session.PcId}");
-              Console.WriteLine($"Время старта: {session.StartTime:HH:mm:ss}");
-              Console.WriteLine($"Заявлено часов: {session.HoursRequested} ч.");
               Console.WriteLine($"Итого к оплате: {session.TotalCost} руб.");
               break;
 
@@ -75,12 +73,16 @@ namespace CyberClubManager {
               var activeSessions = controller.GetActiveSessions();
               Console.WriteLine("\n==== АКТИВНЫЕ ИГРОВЫЕ СЕССИИ ====");
               if (activeSessions.Count == 0) {
-                Console.WriteLine("В данный момент нет активных сессий.");
+                Console.WriteLine("В данный момент нет active сессий.");
               } else {
                 foreach (var s in activeSessions) {
-                  Console.WriteLine($"ПК №{s.PcId} | Игрок: {s.Username} | Оплачено: {s.TotalCost} руб. | До: {s.StartTime.AddHours(s.HoursRequested):HH:mm}");
+                  Console.WriteLine($"ПК №{s.PcId} | Игрок: {s.Username} | Оплачено: {s.TotalCost} руб.");
                 }
               }
+              break;
+
+            case "6":
+              controller.DisplayFinancialReport();
               break;
 
             case "0":

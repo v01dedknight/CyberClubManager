@@ -107,5 +107,20 @@ namespace CyberClub.Tests {
         Assert.That(targetPc!.IsOccupied, Is.True, "ПК в базе должен стать занятым после старта сессии.");
       });
     }
+
+    [Test]
+    public void CloseSession_ShouldAddMoneyToTotalRevenue_WhenSessionEnds() {
+      // Arrange
+      var computers = new List<Computer> { new StandardPcFactory().CreatePc(1) };
+      _repository!.SaveAll(computers);
+      var controller = new BookingController(_tempFilePath!);
+
+      // Act
+      controller.StartSession(pcId: 1, username: "Guts", hours: 2); // 150 * 2 = 300
+      controller.CloseSession(pcId: 1);
+
+      // Assert
+      Assert.That(controller.GetTotalRevenue(), Is.EqualTo(300.0), "Касса должна пополниться на 300 рублей после закрытия сессии.");
+    }
   }
 }

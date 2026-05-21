@@ -11,11 +11,13 @@ namespace CyberClubManager.App {
     private readonly FilePcRepository _repository;
     private readonly List<Computer> _computers;
     private readonly List<GameSession> _activeSessions;
+    private double _totalRevenue; // Наша касса
 
     public BookingController(string filePath) {
       _repository = new FilePcRepository(filePath);
       _computers = _repository.GetAll();
       _activeSessions = new List<GameSession>();
+      _totalRevenue = 0.0;
 
       // Если файл базы пуст, генерируем начальный зал для теста
       if (_computers.Count == 0) {
@@ -51,9 +53,6 @@ namespace CyberClubManager.App {
       Console.WriteLine($"Успех! Компьютер №{id} забронирован.");
     }
 
-    /// <summary>
-    /// Старт новой игровой сессии с расчетом стоимости.
-    /// </summary>
     public GameSession StartSession(int pcId, string username, int hours) {
       var pc = _computers.Find(c => c.Id == pcId);
       if (pc == null)
@@ -71,9 +70,6 @@ namespace CyberClubManager.App {
       return session;
     }
 
-    /// <summary>
-    /// Завершение активной игровой сессии.
-    /// </summary>
     public void CloseSession(int pcId) {
       var session = _activeSessions.Find(s => s.PcId == pcId && s.IsActive);
       if (session == null) {
@@ -88,9 +84,21 @@ namespace CyberClubManager.App {
       }
 
       session.EndSession();
+      _totalRevenue += session.TotalCost; // Деньги падают в кассу при закрытии
       _activeSessions.Remove(session);
-      Console.WriteLine($"Сессия игрока {session.Username} на ПК №{pcId} успешно завершена.");
+      Console.WriteLine($"Сессия игрока {session.Username} на ПК №{pcId} успешно завершена. В кассу добавлено {session.TotalCost} руб.");
     }
+
+    /// <summary>
+    /// Вывод финансового отчета по клубу.
+    /// </summary>
+    public void DisplayFinancialReport() {
+      Console.WriteLine("\n==== ФИНАНСОВЫЙ ОТЧЕТ КЛУБА ====");
+      Console.WriteLine($"Общая выручка в кассе: {_totalRevenue} руб.");
+      Console.WriteLine($"Количество активных сессий сейчас: {_activeSessions.Count}");
+    }
+
+    public double GetTotalRevenue() => _totalRevenue;
 
     public IReadOnlyList<GameSession> GetActiveSessions() => _activeSessions.AsReadOnly();
   }
