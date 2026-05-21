@@ -5,10 +5,9 @@ using System.IO;
 using CyberClubManager.Core;
 
 namespace CyberClubManager.Storage {
-  /// <summary>
-  /// Репозиторий для сохранения и чтения данных ПК из текстового файла.
-  /// </summary>
+  // Repository for saving and loading PC data from a text file.
   public class FilePcRepository {
+    private const int MinDataPartsLength = 5;
     private readonly string _filePath;
     private readonly StandardPcFactory _standardFactory = new StandardPcFactory();
     private readonly VipPcFactory _vipFactory = new VipPcFactory();
@@ -21,15 +20,15 @@ namespace CyberClubManager.Storage {
     }
 
     public List<Computer> GetAll() {
-      var computers = new List<Computer>();
+      List<Computer> computers = new List<Computer>();
       if (!File.Exists(_filePath)) return computers;
 
-      var lines = File.ReadAllLines(_filePath);
-      foreach (var line in lines) {
+      string[] lines = File.ReadAllLines(_filePath);
+      foreach (string line in lines) {
         if (string.IsNullOrWhiteSpace(line)) continue;
 
-        var parts = line.Split(';');
-        if (parts.Length < 5) continue;
+        string[] parts = line.Split(';');
+        if (parts.Length < MinDataPartsLength) continue;
 
         int id = int.Parse(parts[0]);
         string specs = parts[1];
@@ -45,7 +44,7 @@ namespace CyberClubManager.Storage {
         pc.HourlyRate = rate;
         pc.IsOccupied = isOccupied;
 
-        if (pc is VipComputer vip && parts.Length > 5) {
+        if (pc is VipComputer vip && parts.Length > MinDataPartsLength) {
           vip.ExtraAmenities = parts[5];
         }
 
@@ -56,14 +55,17 @@ namespace CyberClubManager.Storage {
     }
 
     public void SaveAll(List<Computer> computers) {
-      var lines = new List<string>();
-      foreach (var pc in computers) {
+      List<string> lines = new List<string>();
+      foreach (Computer pc in computers) {
         string line = $"{pc.Id};{pc.HardwareSpecs};{pc.HourlyRate.ToString(CultureInfo.InvariantCulture)};{pc.IsOccupied};{pc.Zone}";
+
         if (pc is VipComputer vip) {
           line += $";{vip.ExtraAmenities}";
         }
+
         lines.Add(line);
       }
+
       File.WriteAllLines(_filePath, lines);
     }
   }

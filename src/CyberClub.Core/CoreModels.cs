@@ -1,17 +1,13 @@
 ﻿using System;
 
 namespace CyberClubManager.Core {
-  /// <summary>
-  /// Зоны компьютерного клуба.
-  /// </summary>
+  // PC zones in the club.
   public enum PcZone {
     Standard,
     Vip
   }
 
-  /// <summary>
-  /// Абстрактный класс игрового компьютера.
-  /// </summary>
+  // Abstract class representing a gaming computer.
   public abstract class Computer {
     public int Id { get; set; }
     public string HardwareSpecs { get; set; }
@@ -27,33 +23,34 @@ namespace CyberClubManager.Core {
     }
   }
 
-  /// <summary>
-  /// Обычное игровое место.
-  /// </summary>
+  // Standard gaming place.
   public class StandardComputer : Computer {
+    private const double StandardHourlyRate = 150.0;
+    private const string StandardSpecs = "RTX 4060, Core i5, 16GB RAM";
+
     public override PcZone Zone => PcZone.Standard;
 
     public StandardComputer(int id)
-        : base(id, "RTX 4060, Core i5, 16GB RAM", 150.0) {
+        : base(id, StandardSpecs, StandardHourlyRate) {
     }
   }
 
-  /// <summary>
-  /// VIP игровое место повышенного комфорта.
-  /// </summary>
+  // VIP gaming place with increased comfort.
   public class VipComputer : Computer {
+    private const double VipHourlyRate = 300.0;
+    private const string VipSpecs = "RTX 4090, Core i9, 32GB RAM";
+    private const string DefaultAmenities = "Mechanical Keyboard, Gaming Chair, Energy Drink Free";
+
     public override PcZone Zone => PcZone.Vip;
     public string ExtraAmenities { get; set; }
 
     public VipComputer(int id)
-        : base(id, "RTX 4090, Core i9, 32GB RAM", 300.0) {
-      ExtraAmenities = "Mechanical Keyboard, Gaming Chair, Energy Drink Free";
+        : base(id, VipSpecs, VipHourlyRate) {
+      ExtraAmenities = DefaultAmenities;
     }
   }
 
-  /// <summary>
-  /// Игровая сессия пользователя.
-  /// </summary>
+  // User gaming session.
   public class GameSession {
     public int PcId { get; set; }
     public string Username { get; set; }
@@ -65,7 +62,7 @@ namespace CyberClubManager.Core {
     public GameSession(int pcId, string username, int hoursRequested, double hourlyRate) {
       PcId = pcId;
       Username = username ?? throw new ArgumentNullException(nameof(username));
-      HoursRequested = hoursRequested > 0 ? hoursRequested : throw new ArgumentException("Время сессии должно быть больше нуля.");
+      HoursRequested = hoursRequested > 0 ? hoursRequested : throw new ArgumentException("Session time must be greater than zero.");
       StartTime = DateTime.Now;
       TotalCost = hoursRequested * hourlyRate;
       IsActive = true;
@@ -76,9 +73,7 @@ namespace CyberClubManager.Core {
     }
   }
 
-  /// <summary>
-  /// Абстрактная фабрика (Factory Method паттерн).
-  /// </summary>
+  // Abstract factory pattern base.
   public abstract class PcFactory {
     public abstract Computer CreatePc(int id);
   }
