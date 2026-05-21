@@ -8,20 +8,18 @@ using NUnit.Framework;
 namespace CyberClub.Tests {
   [TestFixture]
   public class BookingTests {
-    private string _tempFilePath;
-    private FilePcRepository _repository;
+    private string? _tempFilePath;
+    private FilePcRepository? _repository;
 
     [SetUp]
     public void SetUp() {
-      // Создаем временный файл для каждого теста, чтобы они были изолированы
       _tempFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "test_cyberclub_db.txt");
       _repository = new FilePcRepository(_tempFilePath);
     }
 
     [TearDown]
     public void TearDown() {
-      // Удаляем временный файл после прохождения теста
-      if (File.Exists(_tempFilePath)) {
+      if (_tempFilePath != null && File.Exists(_tempFilePath)) {
         File.Delete(_tempFilePath);
       }
     }
@@ -36,11 +34,14 @@ namespace CyberClub.Tests {
       var pc = factory.CreatePc(targetId);
 
       // Assert
-      Assert.IsNotNull(pc);
-      Assert.AreEqual(targetId, pc.Id);
-      Assert.AreEqual(PcZone.Standard, pc.Zone);
-      Assert.IsFalse(pc.IsOccupied);
-      Assert.IsTrue(pc.HardwareSpecs.Contains("4060"));
+      Assert.Multiple(() =>
+      {
+        Assert.That(pc, Is.Not.Null);
+        Assert.That(pc.Id, Is.EqualTo(targetId));
+        Assert.That(pc.Zone, Is.EqualTo(PcZone.Standard));
+        Assert.That(pc.IsOccupied, Is.False);
+        Assert.That(pc.HardwareSpecs, Does.Contain("4060"));
+      });
     }
 
     [Test]
@@ -53,9 +54,12 @@ namespace CyberClub.Tests {
       var pc = factory.CreatePc(targetId) as VipComputer;
 
       // Assert
-      Assert.IsNotNull(pc);
-      Assert.AreEqual(PcZone.Vip, pc.Zone);
-      Assert.IsNotEmpty(pc.ExtraAmenities);
+      Assert.Multiple(() =>
+      {
+        Assert.That(pc, Is.Not.Null);
+        Assert.That(pc!.Zone, Is.EqualTo(PcZone.Vip));
+        Assert.That(pc!.ExtraAmenities, Is.Not.Empty);
+      });
     }
 
     [Test]
@@ -66,17 +70,20 @@ namespace CyberClub.Tests {
                 new StandardPcFactory().CreatePc(1),
                 new VipPcFactory().CreatePc(2)
             };
-      computers[0].IsOccupied = true; // Имитируем бронь
+      computers[0].IsOccupied = true;
 
       // Act
-      _repository.SaveAll(computers);
+      _repository!.SaveAll(computers);
       var loadedComputers = _repository.GetAll();
 
       // Assert
-      Assert.AreEqual(2, loadedComputers.Count);
-      Assert.AreEqual(1, loadedComputers[0].Id);
-      Assert.IsTrue(loadedComputers[0].IsOccupied, "Первый компьютер должен быть сохранен как занятый.");
-      Assert.AreEqual(PcZone.Vip, loadedComputers[1].Zone);
+      Assert.Multiple(() =>
+      {
+        Assert.That(loadedComputers, Has.Count.EqualTo(2));
+        Assert.That(loadedComputers[0].Id, Is.EqualTo(1));
+        Assert.That(loadedComputers[0].IsOccupied, Is.True, "Первый компьютер должен быть сохранен как занятый.");
+        Assert.That(loadedComputers[1].Zone, Is.EqualTo(PcZone.Vip));
+      });
     }
   }
 }
