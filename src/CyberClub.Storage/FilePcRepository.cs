@@ -25,10 +25,14 @@ namespace CyberClubManager.Storage {
 
       string[] lines = File.ReadAllLines(_filePath);
       foreach (string line in lines) {
-        if (string.IsNullOrWhiteSpace(line)) continue;
+        if (string.IsNullOrWhiteSpace(line)) {
+          continue;
+        }
 
         string[] parts = line.Split(';');
-        if (parts.Length < MinDataPartsLength) continue;
+        if (parts.Length < MinDataPartsLength) {
+          continue;
+        }
 
         int id = int.Parse(parts[0]);
         string specs = parts[1];
@@ -36,9 +40,12 @@ namespace CyberClubManager.Storage {
         bool isOccupied = bool.Parse(parts[3]);
         PcZone zone = (PcZone)Enum.Parse(typeof(PcZone), parts[4]);
 
-        Computer pc = zone == PcZone.Vip
-            ? _vipFactory.CreatePc(id)
-            : _standardFactory.CreatePc(id);
+        Computer pc;
+        if (zone == PcZone.Vip) {
+          pc = _vipFactory.CreatePc(id);
+        } else {
+          pc = _standardFactory.CreatePc(id);
+        }
 
         pc.HardwareSpecs = specs;
         pc.HourlyRate = rate;

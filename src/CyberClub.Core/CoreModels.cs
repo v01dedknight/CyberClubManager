@@ -28,7 +28,11 @@ namespace CyberClubManager.Core {
     private const double StandardHourlyRate = 150.0;
     private const string StandardSpecs = "RTX 4060, Core i5, 16GB RAM";
 
-    public override PcZone Zone => PcZone.Standard;
+    public override PcZone Zone {
+      get {
+        return PcZone.Standard;
+      }
+    }
 
     public StandardComputer(int id)
         : base(id, StandardSpecs, StandardHourlyRate) {
@@ -41,7 +45,12 @@ namespace CyberClubManager.Core {
     private const string VipSpecs = "RTX 4090, Core i9, 32GB RAM";
     private const string DefaultAmenities = "Mechanical Keyboard, Gaming Chair, Energy Drink Free";
 
-    public override PcZone Zone => PcZone.Vip;
+    public override PcZone Zone {
+      get {
+        return PcZone.Vip;
+      }
+    }
+
     public string ExtraAmenities { get; set; }
 
     public VipComputer(int id)
@@ -62,7 +71,11 @@ namespace CyberClubManager.Core {
     public GameSession(int pcId, string username, int hoursRequested, double hourlyRate) {
       PcId = pcId;
       Username = username ?? throw new ArgumentNullException(nameof(username));
-      HoursRequested = hoursRequested > 0 ? hoursRequested : throw new ArgumentException("Session time must be greater than zero.");
+      if (hoursRequested > 0) {
+        HoursRequested = hoursRequested;
+      } else {
+        throw new ArgumentException("Session time must be greater than zero.");
+      }
       StartTime = DateTime.Now;
       TotalCost = hoursRequested * hourlyRate;
       IsActive = true;
@@ -79,10 +92,14 @@ namespace CyberClubManager.Core {
   }
 
   public class StandardPcFactory : PcFactory {
-    public override Computer CreatePc(int id) => new StandardComputer(id);
+    public override Computer CreatePc(int id) {
+      return new StandardComputer(id);
+    }
   }
 
   public class VipPcFactory : PcFactory {
-    public override Computer CreatePc(int id) => new VipComputer(id);
+    public override Computer CreatePc(int id) {
+      return new VipComputer(id);
+    }
   }
 }
