@@ -52,6 +52,31 @@ namespace CyberClubManager.Core {
   }
 
   /// <summary>
+  /// Игровая сессия пользователя.
+  /// </summary>
+  public class GameSession {
+    public int PcId { get; set; }
+    public string Username { get; set; }
+    public DateTime StartTime { get; set; }
+    public int HoursRequested { get; set; }
+    public double TotalCost { get; set; }
+    public bool IsActive { get; set; }
+
+    public GameSession(int pcId, string username, int hoursRequested, double hourlyRate) {
+      PcId = pcId;
+      Username = username ?? throw new ArgumentNullException(nameof(username));
+      HoursRequested = hoursRequested > 0 ? hoursRequested : throw new ArgumentException("Время сессии должно быть больше нуля.");
+      StartTime = DateTime.Now;
+      TotalCost = hoursRequested * hourlyRate;
+      IsActive = true;
+    }
+
+    public void EndSession() {
+      IsActive = false;
+    }
+  }
+
+  /// <summary>
   /// Абстрактная фабрика (Factory Method паттерн).
   /// </summary>
   public abstract class PcFactory {
