@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -17,6 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CyberClubManager.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Tests\*.cs" Link="Tests\%(Filename)%(Extension)" />
   </ItemGroup>
 
 </Project>
