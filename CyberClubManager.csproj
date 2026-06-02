@@ -43,6 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications\AdminConsoleLogger.cs" />
+    <Compile Include="Notifications\ILoyaltyPricingStrategy.cs" />
+    <Compile Include="Notifications\ISessionObserver.cs" />
+    <Compile Include="Notifications\ISessionSubject.cs" />
+    <Compile Include="Notifications\LoyaltyPricingStrategy.cs" />
+    <Compile Include="Notifications\SessionTimeTracker.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Composite\Computer.cs" />
     <Compile Include="Composite\ComputerHall.cs" />
