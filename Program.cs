@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CyberClubManager.App;
+using CyberClubManager.ComputerManagement;
 using CyberClubManager.Core;
 
 namespace CyberClubManager {
@@ -27,6 +28,7 @@ namespace CyberClubManager {
       Console.WriteLine("4. Close a game session");
       Console.WriteLine("5. Show active sessions");
       Console.WriteLine("6. Show financial report (Revenue)");
+      Console.WriteLine("7. Show computer configuration structure");
       Console.WriteLine("0. Exit");
       Console.Write("Select an action: ");
     }
@@ -52,6 +54,9 @@ namespace CyberClubManager {
           case "6":
             controller.DisplayFinancialReport();
             break;
+          case "7":
+            HandleShowComputerConfiguration();
+            break;
           case "0":
             Console.WriteLine("Exiting program. Have a good day!");
             return false;
@@ -60,13 +65,15 @@ namespace CyberClubManager {
             break;
         }
       } catch (Exception ex) {
-        Console.WriteLine($"[EXECUTION ERROR]: {ex.Message}");
+        Console.WriteLine("[EXECUTION ERROR]: " + ex.Message);
       }
+
       return true;
     }
 
     private static void HandleQuickBooking(BookingController controller) {
       Console.Write("Enter computer ID for booking: ");
+
       if (int.TryParse(Console.ReadLine(), out int bookId)) {
         controller.BookComputer(bookId);
       } else {
@@ -92,12 +99,13 @@ namespace CyberClubManager {
 
       GameSession session = controller.StartSession(pcId, username, hours);
       Console.WriteLine("\n[SUCCESS] Session successfully opened!");
-      Console.WriteLine($"Player: {session.Username} | PC #{session.PcId}");
-      Console.WriteLine($"Total to pay: {session.TotalCost} USD.");
+      Console.WriteLine("Player: " + session.Username + " | PC #" + session.PcId);
+      Console.WriteLine("Total to pay: " + session.TotalCost + " USD.");
     }
 
     private static void HandleCloseSession(BookingController controller) {
       Console.Write("Enter computer ID to close session: ");
+
       if (int.TryParse(Console.ReadLine(), out int closeId)) {
         controller.CloseSession(closeId);
       } else {
@@ -114,8 +122,21 @@ namespace CyberClubManager {
         return;
       }
 
-      foreach (GameSession s in activeSessions) {
-        Console.WriteLine($"PC #{s.PcId} | Player: {s.Username} | Paid: {s.TotalCost} USD.");
+      foreach (GameSession session in activeSessions) {
+        Console.WriteLine("PC #" + session.PcId + " | Player: " + session.Username + " | Paid: " + session.TotalCost + " USD.");
+      }
+    }
+
+    private static void HandleShowComputerConfiguration() {
+      ComputerConfigurationManager manager = new ComputerConfigurationManager();
+      manager.BuildDefaultClubConfiguration();
+
+      List<string> configurationLines = manager.GetClubConfigurationLines();
+
+      Console.WriteLine("\n==== COMPUTER CONFIGURATION STRUCTURE ====");
+
+      foreach (string line in configurationLines) {
+        Console.WriteLine(line);
       }
     }
   }

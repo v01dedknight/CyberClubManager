@@ -43,7 +43,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications\AdminConsoleLogger.cs" />
+    <Compile Include="Notifications\ILoyaltyPricingStrategy.cs" />
+    <Compile Include="Notifications\ISessionObserver.cs" />
+    <Compile Include="Notifications\ISessionSubject.cs" />
+    <Compile Include="Notifications\LoyaltyPricingStrategy.cs" />
+    <Compile Include="Notifications\SessionTimeTracker.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Composite\Computer.cs" />
+    <Compile Include="Composite\ComputerHall.cs" />
+    <Compile Include="Composite\Device.cs" />
+    <Compile Include="Composite\IComputerComponent.cs" />
+    <Compile Include="ComputerManagement\ComputerConfigurationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\CyberClub.App\BookingController.cs" />
     <Compile Include="src\CyberClub.Core\CoreModels.cs" />
