@@ -1,4 +1,8 @@
 <Solution>
+  <Folder Name="/Элементы решения/">
+    <File Path=".editorconfig" />
+    <File Path="Settings.StyleCop.json" />
+  </Folder>
   <Project Path="CyberClub.Tests/CyberClub.Tests.csproj" />
   <Project Path="CyberClubManager.csproj" Id="28e687d4-ca51-4733-9b76-4a5529f16724" />
 </Solution>

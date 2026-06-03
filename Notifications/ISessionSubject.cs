@@ -16,7 +16,7 @@
     void Detach(ISessionObserver observer);
 
     /// <summary>
-    /// Оповещает всех зарегистрированных наблюдателей о発生вшемся алерте.
+    /// Оповещает всех зарегистрированных наблюдателей оставшемся алерте.
     /// </summary>
     /// <param name="alertMessage">Сообщение алерта.</param>
     void NotifyAlert(string alertMessage);

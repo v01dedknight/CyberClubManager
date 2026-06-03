@@ -9,6 +9,7 @@ namespace CyberClubManager.Notifications {
   public class SessionTimeTracker : ISessionSubject {
     private readonly List<ISessionObserver> _observerList = new List<ISessionObserver>();
     private readonly HashSet<int> _warnedSessions = new HashSet<int>();
+    private readonly double _sessionDuration = 15.0;
 
     /// <summary>
     /// Регистрирует наблюдателя.
@@ -70,7 +71,7 @@ namespace CyberClubManager.Notifications {
 
         if (minutesRemaining <= 0) {
           NotifyAlert($"ALERT: Session for player '{session.Username}' on PC #{session.PcId} has EXPIRED!");
-        } else if (minutesRemaining <= 15.0 && !_warnedSessions.Contains(session.PcId)) {
+        } else if (minutesRemaining <= _sessionDuration && !_warnedSessions.Contains(session.PcId)) {
           _warnedSessions.Add(session.PcId);
           NotifyAlert($"WARNING: Only {Math.Round(minutesRemaining, 1)} minutes left for player '{session.Username}' on PC #{session.PcId}.");
         }
