@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using CyberClubManager.Core;
+﻿using CyberClubManager.Core;
 
 namespace CyberClubManager.Notifications {
   /// <summary>
